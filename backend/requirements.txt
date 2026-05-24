@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic
+numpy
+scipy
+librosa
+soundfile
+pretty_midi
+music21
+reportlab
+yt-dlp
+faster-whisper
