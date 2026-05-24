@@ -78,3 +78,101 @@ export function decorateBhatkhande(swaraRaw: string, ornamentation?: string | nu
       return glyph;
   }
 }
+
+const VOWELS = new Set(["a", "e", "i", "o", "u", "A", "E", "I", "O", "U"]);
+
+export function syllabifyRoman(text: string): string[] {
+  if (!text) return [];
+  const out: string[] = [];
+  for (const word of text.split(/\s+/).filter(Boolean)) {
+    const positions: number[] = [];
+    for (let i = 0; i < word.length; i++) {
+      if (VOWELS.has(word[i])) positions.push(i);
+    }
+    if (positions.length === 0) {
+      out.push(word);
+      continue;
+    }
+    let start = 0;
+    for (let i = 0; i < positions.length - 1; i++) {
+      const consStart = positions[i] + 1;
+      const consEnd = positions[i + 1];
+      const clusterLen = consEnd - consStart;
+      const split = clusterLen <= 1 ? consStart : consStart + 1;
+      out.push(word.slice(start, split));
+      start = split;
+    }
+    out.push(word.slice(start));
+  }
+  return out;
+}
+
+function visualWidth(value: string): number {
+  let width = 0;
+  for (const ch of value) {
+    const code = ch.codePointAt(0) ?? 0;
+    if (code >= 0x0300 && code <= 0x036f) continue;
+    width++;
+  }
+  return width;
+}
+
+function padRight(value: string, width: number): string {
+  const deficit = width - visualWidth(value);
+  return value + " ".repeat(Math.max(0, deficit));
+}
+
+interface AlignNote {
+  swara: string;
+  ornamentation?: string | null;
+  stroke: string;
+  duration: number;
+}
+
+export interface AlignedPhrase {
+  hasLyrics: boolean;
+  lyrics: string;
+  swaras: string;
+  strokes: string;
+}
+
+export function alignPhrase(notes: AlignNote[], lyricsText: string | null | undefined): AlignedPhrase {
+  const syllables = syllabifyRoman(lyricsText ?? "");
+  const hasLyrics = syllables.length > 0;
+  const columns: { lyric: string; swara: string; stroke: string }[] = [];
+  let syllIdx = 0;
+
+  notes.forEach((note, index) => {
+    if (index > 0 && index % 4 === 0) {
+      columns.push({ lyric: "|", swara: "|", stroke: "|" });
+    }
+    const swara = decorateBhatkhande(note.swara, note.ornamentation);
+    const stroke = note.stroke.replace(", sustain", "");
+    const lyric = syllIdx < syllables.length ? syllables[syllIdx++] : "";
+    columns.push({ lyric, swara, stroke });
+
+    let sustains = 0;
+    if (note.duration >= 1.2) sustains = 2;
+    else if (note.duration >= 0.65) sustains = 1;
+    for (let s = 0; s < sustains; s++) {
+      columns.push({ lyric: "", swara: SUSTAIN, stroke: SUSTAIN });
+    }
+  });
+
+  if (syllIdx < syllables.length && columns.length > 0) {
+    const trailing = syllables.slice(syllIdx).join(" ");
+    const last = columns[columns.length - 1];
+    last.lyric = (last.lyric + " " + trailing).trim();
+  }
+
+  const widths = columns.map((col) =>
+    Math.max(visualWidth(col.lyric), visualWidth(col.swara), visualWidth(col.stroke)),
+  );
+
+  return {
+    hasLyrics,
+    lyrics: columns.map((col, i) => padRight(col.lyric, widths[i])).join(" "),
+    swaras: columns.map((col, i) => padRight(col.swara, widths[i])).join(" "),
+    strokes: columns.map((col, i) => padRight(col.stroke, widths[i])).join(" "),
+  };
+}

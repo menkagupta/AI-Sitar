@@ -2,7 +2,7 @@ import { Copy, Download } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { exportUrl } from "../lib/api";
-import { NOTATION_KEY, SUSTAIN, decorateBhatkhande } from "../lib/notation";
+import { NOTATION_KEY, alignPhrase } from "../lib/notation";
 import type { AnalysisResult } from "../types/api";
 
 export function ExportPanel({ result }: { result: AnalysisResult }) {
@@ -48,7 +48,7 @@ export function ExportPanel({ result }: { result: AnalysisResult }) {
           </div>
         </div>
         {showInlineNotes && (
-          <pre className="max-h-[70vh] overflow-auto whitespace-pre-wrap p-4 font-mono text-sm leading-6 text-stone-800 md:p-5">
+          <pre className="max-h-[70vh] overflow-auto whitespace-pre p-4 font-mono text-sm leading-6 text-stone-800 md:p-5">
             {inlineNotes}
           </pre>
         )}
@@ -89,48 +89,18 @@ function formatInlineNotes(result: AnalysisResult): string {
     lines.push(`${section.name} (${formatTime(section.start)} - ${formatTime(section.end)})`);
 
     for (const phrase of section.phrases) {
-      const simple = formatPhrase(phrase);
+      const aligned = alignPhrase(phrase.notes, phrase.lyrics);
       const phraseLines = [`${phraseNumber}.`];
-      if (phrase.lyrics) {
-        phraseLines.push(`   ${phrase.lyrics}`);
+      if (aligned.hasLyrics) {
+        phraseLines.push(`   ${aligned.lyrics}`);
       }
-      phraseLines.push(`   ${simple.swaras}`, `   ${simple.strokes}`, "");
+      phraseLines.push(`   ${aligned.swaras}`, `   ${aligned.strokes}`, "");
       lines.push(...phraseLines);
       phraseNumber += 1;
     }
   }
 
   return lines.join("\n");
-}
-
-function formatPhrase(phrase: AnalysisResult["sections"][number]["phrases"][number]) {
-  const swaraTokens: string[] = [];
-  const strokeTokens: string[] = [];
-
-  phrase.notes.forEach((note, index) => {
-    if (index > 0 && index % 4 === 0) {
-      swaraTokens.push("|");
-      strokeTokens.push("|");
-    }
-
-    swaraTokens.push(decorateBhatkhande(note.swara, note.ornamentation), ...sustainMarks(note.duration));
-    strokeTokens.push(note.stroke.replace(", sustain", ""), ...sustainMarks(note.duration));
-  });
-
-  return {
-    swaras: swaraTokens.join(" "),
-    strokes: strokeTokens.join(" "),
-  };
-}
-
-function sustainMarks(duration: number): string[] {
-  if (duration >= 1.2) {
-    return [SUSTAIN, SUSTAIN];
-  }
-  if (duration >= 0.65) {
-    return [SUSTAIN];
-  }
-  return [];
 }
 
 function formatTime(seconds: number): string {

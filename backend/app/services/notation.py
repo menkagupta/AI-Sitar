@@ -97,3 +97,105 @@ def decorate_bhatkhande(swara_raw: str, ornamentation: str | None) -> str:
     if ornamentation == "murki":
         return f"({glyph})"
     return glyph
+
+
+_VOWELS = set("aeiouAEIOU")
+
+
+def syllabify_roman(text: str) -> list[str]:
+    """Rough syllabifier for Roman-transliterated Hindi / Sanskrit.
+
+    Uses the standard CV split: a consonant cluster between two vowels gives
+    one consonant to the previous syllable and the rest to the next. Works
+    well enough for bhajan alignment ("Chandra" -> ["Chan", "dra"],
+    "Kripalu" -> ["Kri", "pa", "lu"]).
+    """
+
+    if not text:
+        return []
+    out: list[str] = []
+    for word in text.split():
+        positions = [i for i, ch in enumerate(word) if ch in _VOWELS]
+        if not positions:
+            out.append(word)
+            continue
+        start = 0
+        for i in range(len(positions) - 1):
+            cons_start = positions[i] + 1
+            cons_end = positions[i + 1]
+            cluster_len = cons_end - cons_start
+            split = cons_start if cluster_len <= 1 else cons_start + 1
+            out.append(word[start:split])
+            start = split
+        out.append(word[start:])
+    return out
+
+
+def _visual_width(value: str) -> int:
+    width = 0
+    for ch in value:
+        code = ord(ch)
+        if 0x0300 <= code <= 0x036F:
+            continue
+        width += 1
+    return width
+
+
+def _pad_right(value: str, width: int) -> str:
+    deficit = width - _visual_width(value)
+    return value + (" " * max(0, deficit))
+
+
+def align_phrase(
+    notes: list,
+    lyrics_text: str | None,
+    *,
+    barline_every: int = 4,
+    sustain_durations: tuple[float, float] = (0.65, 1.2),
+) -> dict[str, str | bool]:
+    """Return lyrics/swaras/strokes rows that share column widths.
+
+    Each non-sustain note becomes one column; sustained holds become extra
+    columns filled with em dashes; every ``barline_every`` notes a barline
+    column is inserted in all three rows. Lyric syllables are distributed
+    one per note column; any overflow is appended to the last column.
+    """
+
+    syllables = syllabify_roman(lyrics_text or "")
+    has_lyrics = len(syllables) > 0
+    columns: list[dict[str, str]] = []
+    syll_idx = 0
+
+    for index, event in enumerate(notes):
+        if index > 0 and index % barline_every == 0:
+            columns.append({"lyric": "|", "swara": "|", "stroke": "|"})
+        swara = decorate_bhatkhande(event.swara, event.ornamentation)
+        stroke = event.stroke.replace(", sustain", "")
+        lyric = ""
+        if syll_idx < len(syllables):
+            lyric = syllables[syll_idx]
+            syll_idx += 1
+        columns.append({"lyric": lyric, "swara": swara, "stroke": stroke})
+        duration = float(getattr(event, "duration", 0.0))
+        sustains = 0
+        if duration >= sustain_durations[1]:
+            sustains = 2
+        elif duration >= sustain_durations[0]:
+            sustains = 1
+        for _ in range(sustains):
+            columns.append({"lyric": "", "swara": SUSTAIN, "stroke": SUSTAIN})
+
+    if syll_idx < len(syllables) and columns:
+        trailing = " ".join(syllables[syll_idx:])
+        columns[-1]["lyric"] = (columns[-1]["lyric"] + " " + trailing).strip()
+
+    widths = [
+        max(_visual_width(col["lyric"]), _visual_width(col["swara"]), _visual_width(col["stroke"]))
+        for col in columns
+    ]
+    return {
+        "has_lyrics": has_lyrics,
+        "lyrics": " ".join(_pad_right(col["lyric"], widths[i]) for i, col in enumerate(columns)),
+        "swaras": " ".join(_pad_right(col["swara"], widths[i]) for i, col in enumerate(columns)),
+        "strokes": " ".join(_pad_right(col["stroke"], widths[i]) for i, col in enumerate(columns)),
+    }

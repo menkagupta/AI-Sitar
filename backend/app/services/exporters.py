@@ -3,7 +3,7 @@ from __future__ import annotations
 from io import BytesIO
 
 from app.schemas import AnalysisResult
-from app.services.notation import NOTATION_KEY, SUSTAIN, decorate_bhatkhande
+from app.services.notation import NOTATION_KEY, align_phrase
 
 
 def export_txt(result: AnalysisResult) -> bytes:
@@ -18,11 +18,11 @@ def export_txt(result: AnalysisResult) -> bytes:
     for section in result.sections:
         lines.append(f"{section.name} ({_format_time(section.start)} - {_format_time(section.end)})")
         for phrase in section.phrases:
-            swaras, strokes = _format_phrase(phrase)
+            aligned = align_phrase(phrase.notes, phrase.lyrics)
             phrase_lines = [f"{phrase_number}."]
-            if phrase.lyrics:
-                phrase_lines.append(f"   {phrase.lyrics}")
-            phrase_lines.extend([f"   {swaras}", f"   {strokes}", ""])
+            if aligned["has_lyrics"]:
+                phrase_lines.append(f"   {aligned['lyrics']}")
+            phrase_lines.extend([f"   {aligned['swaras']}", f"   {aligned['strokes']}", ""])
             lines.extend(phrase_lines)
             phrase_number += 1
     return "\n".join(lines).encode("utf-8")
@@ -108,24 +108,4 @@ def _format_time(seconds: float) -> str:
     return f"{minutes:02d}:{remainder:02d}"
 
 
-def _format_phrase(phrase) -> tuple[str, str]:
-    swara_tokens: list[str] = []
-    stroke_tokens: list[str] = []
-    for index, event in enumerate(phrase.notes):
-        if index > 0 and index % 4 == 0:
-            swara_tokens.append("|")
-            stroke_tokens.append("|")
-
-        holds = _sustain_marks(event.duration)
-        swara_tokens.extend([decorate_bhatkhande(event.swara, event.ornamentation), *holds])
-        stroke_tokens.extend([event.stroke.replace(", sustain", ""), *holds])
-    return " ".join(swara_tokens), " ".join(stroke_tokens)
-
-
-def _sustain_marks(duration: float) -> list[str]:
-    if duration >= 1.2:
-        return [SUSTAIN, SUSTAIN]
-    if duration >= 0.65:
-        return [SUSTAIN]
-    return []
 
