@@ -1,5 +1,5 @@
-import { Music2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ArrowUp, Music2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import { ExportPanel } from "./components/ExportPanel";
 import { Hero } from "./components/Hero";
@@ -27,6 +27,9 @@ export default function App() {
   const [practiceTempo, setPracticeTempo] = useState(60);
   const [playbackRate, setPlaybackRate] = useState(0.75);
 
+  const progressRef = useRef<HTMLDivElement | null>(null);
+  const resultsRef = useRef<HTMLDivElement | null>(null);
+
   const isSubmitting = job?.status === "queued" || job?.status === "processing";
 
   useEffect(() => {
@@ -51,6 +54,12 @@ export default function App() {
     return () => window.clearInterval(interval);
   }, [job, options.practice_tempo]);
 
+  useEffect(() => {
+    if (result && resultsRef.current) {
+      resultsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [result]);
+
   async function handleSubmit() {
     if (!file && !options.youtube_url?.trim()) {
       return;
@@ -61,6 +70,9 @@ export default function App() {
     try {
       const nextJob = await submitAnalysis(file, options);
       setJob(nextJob);
+      window.requestAnimationFrame(() => {
+        progressRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "Could not submit audio.");
     }
@@ -84,29 +96,48 @@ export default function App() {
     });
   }
 
-  return (
-    <main className="min-h-screen px-4 py-8 md:px-8">
-      <div className="mx-auto max-w-5xl space-y-6">
-        <Hero />
+  const canSubmit = Boolean(file || options.youtube_url?.trim());
 
-        <div className="space-y-5">
+  return (
+    <main className="px-4 py-6 md:px-8 md:py-8">
+      <div className="mx-auto max-w-5xl space-y-8 md:space-y-10">
+        <Hero
+          form={{
+            youtubeUrl: options.youtube_url ?? "",
+            onYoutubeUrlChange: (value) => setOptions({ ...options, youtube_url: value }),
+            onSubmit: handleSubmit,
+            isSubmitting,
+            canSubmit,
+          }}
+        />
+
+        <section
+          id="advanced"
+          aria-label="Advanced options"
+          className="scroll-mt-6"
+        >
           <UploadPanel
             file={file}
             options={options}
-            isSubmitting={isSubmitting}
             onFileChange={setFile}
             onOptionsChange={setOptions}
-            onSubmit={handleSubmit}
           />
+        </section>
+
+        <section ref={progressRef} aria-label="Analysis progress" className="space-y-5 scroll-mt-6">
+          {(job || error) && <StepHeading number={1} title="We're listening to your song" />}
           {error && (
             <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
               {error}
             </div>
           )}
           <ProgressPanel job={job} />
+        </section>
 
+        <section ref={resultsRef} aria-label="Generated notes" className="scroll-mt-6 space-y-5">
           {result ? (
             <>
+              <StepHeading number={2} title="Your Sitar notes" />
               <ExportPanel result={result} />
               <details className="rounded-[2rem] bg-white/90 p-5 shadow-soft md:p-7">
                 <summary className="cursor-pointer text-sm font-semibold text-stone-700">
@@ -131,15 +162,41 @@ export default function App() {
               </details>
             </>
           ) : (
-            <EmptyStatePreview />
+            !job && <EmptyStatePreview />
           )}
-        </div>
+        </section>
 
-        <footer className="pt-6 pb-2 text-center text-xs text-stone-500">
-          Built for sitar students. Bhatkhande short notation, aligned lyrics, real fret guidance.
+        <footer className="flex flex-col items-center gap-4 pt-6 pb-4 text-center text-xs text-stone-500">
+          <a
+            href="#top"
+            className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white/70 px-3 py-1.5 text-stone-600 transition hover:text-stone-800"
+          >
+            <ArrowUp className="h-3.5 w-3.5" />
+            Back to top
+          </a>
+          <span>Built for sitar students. Bhatkhande short notation, aligned lyrics, real fret guidance.</span>
         </footer>
       </div>
     </main>
+  );
+}
+
+function StepHeading({ number, title }: { number: number; title: string }) {
+  return (
+    <div className="flex items-center gap-3">
+      <span
+        className="grid h-8 w-8 place-items-center rounded-full text-sm font-bold text-white"
+        style={{ background: "linear-gradient(135deg, #d97706 0%, #8b3a1c 100%)" }}
+      >
+        {number}
+      </span>
+      <h2
+        className="text-xl font-bold text-stone-900 md:text-2xl"
+        style={{ fontFamily: "Fraunces, Georgia, serif" }}
+      >
+        {title}
+      </h2>
+    </div>
   );
 }
 
@@ -157,7 +214,7 @@ function EmptyStatePreview() {
           </h2>
           <p className="mt-2 max-w-xl text-stone-600">
             Lyrics line up directly above the swara they are sung on, sustains hold their own beat,
-            and ornaments live inline as small marks. Paste a link above to generate yours.
+            and ornaments live inline as small marks. Paste a link at the top to generate yours.
           </p>
         </div>
 
