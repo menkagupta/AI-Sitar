@@ -1,4 +1,4 @@
-import { Link, Upload } from "lucide-react";
+import { Link, PlayCircle, Upload } from "lucide-react";
 import type { ChangeEvent, FormEvent } from "react";
 
 import type { NotationStyle, ProjectOptions, SkillLevel } from "../types/api";
@@ -34,22 +34,30 @@ export function UploadPanel({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-[2rem] bg-white/95 p-5 shadow-soft md:p-7">
+    <form
+      onSubmit={handleSubmit}
+      className="relative overflow-hidden rounded-[2rem] bg-white/95 p-5 shadow-soft md:p-7"
+    >
+      <span aria-hidden className="absolute inset-x-0 top-0 h-1.5 bg-raga-gradient" />
+
       <div className="mb-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-saffron">AI Sitar notes</p>
-        <h2 className="mt-2 text-2xl font-bold">Paste a YouTube link</h2>
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-saffron">Start here</p>
+        <h2 className="font-display mt-2 text-2xl font-bold text-ink md:text-3xl">
+          Paste a YouTube link
+        </h2>
         <p className="mt-2 text-sm text-stone-600">
-          We will extract the main melody and show playable Sitar notes below. Accuracy depends on audio quality.
+          We will extract the main melody and show playable Sitar notes below. Accuracy depends on
+          audio quality.
         </p>
       </div>
 
-      <label className="text-sm font-medium">
-        <span className="flex items-center gap-2">
+      <label className="block text-sm font-medium">
+        <span className="flex items-center gap-2 text-stone-700">
           <Link className="h-4 w-4 text-raga" />
           YouTube URL
         </span>
         <input
-          className="mt-2 w-full rounded-2xl border border-stone-200 bg-white px-4 py-4 text-base shadow-sm outline-none transition focus:border-raga focus:ring-4 focus:ring-raga/10"
+          className="mt-2 w-full rounded-2xl border border-stone-200 bg-cream/60 px-4 py-4 text-base shadow-inner outline-none transition focus:border-raga focus:bg-white focus:ring-4 focus:ring-raga/10"
           type="url"
           placeholder="https://www.youtube.com/watch?v=..."
           value={options.youtube_url ?? ""}
@@ -59,8 +67,9 @@ export function UploadPanel({
 
       <button
         disabled={(!file && !options.youtube_url?.trim()) || isSubmitting}
-        className="mt-4 w-full rounded-2xl bg-ink px-5 py-4 font-semibold text-white transition hover:bg-raga disabled:cursor-not-allowed disabled:bg-stone-300"
+        className="group mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-raga-gradient px-5 py-4 font-semibold text-white shadow-glow transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-stone-300 disabled:bg-none disabled:text-stone-500 disabled:shadow-none"
       >
+        <PlayCircle className="h-5 w-5 transition-transform group-hover:scale-110" />
         {isSubmitting ? "Generating notes..." : "Generate Sitar notes"}
       </button>
 

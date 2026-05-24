@@ -1,21 +1,75 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #18120f;
+  --color-sandal: #f7ead1;
+  --color-cream: #fff8ec;
+  --color-saffron: #d97706;
+  --color-saffron-soft: #fbbf24;
+  --color-raga: #8b3a1c;
+  --color-raga-deep: #5e2410;
+  --color-peacock: #1e6f7b;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+
+  --shadow-soft: 0 24px 80px rgba(38, 25, 12, 0.12);
+  --shadow-glow: 0 18px 60px rgba(217, 119, 6, 0.28);
+}
 
 :root {
-  color: #18120f;
-  background: #fff8ec;
-  font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
 }
 
 body {
   margin: 0;
   min-width: 320px;
+  background-color: var(--color-cream);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(217, 119, 6, 0.14), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 90% 30%, rgba(30, 111, 123, 0.10), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(139, 58, 28, 0.08), transparent 65%);
+  background-attachment: fixed;
 }
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
+}
+
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes string-pluck {
+  0%, 100% { transform: scaleY(1); opacity: 0.6; }
+  50% { transform: scaleY(1.05); opacity: 1; }
+}
+
+.animate-float-soft {
+  animation: float-soft 7s ease-in-out infinite;
+}
+
+.animate-string-pluck {
+  animation: string-pluck 3s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+.text-gradient-raga {
+  background: linear-gradient(135deg, #d97706 0%, #8b3a1c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.bg-raga-gradient {
+  background: linear-gradient(135deg, #d97706 0%, #8b3a1c 100%);
+}
+
+.bg-raga-soft {
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.12) 0%, rgba(139, 58, 28, 0.06) 100%);
 }
