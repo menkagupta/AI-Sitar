@@ -1,0 +1,81 @@
+# Source: project id 979e2d23-c5f1-441b-9ddd-0c08a8a68e64 (saved 2026-05-24 04:57:25 UTC)
+# Generated: 2026-05-24 by AI Sitar (Bhatkhande + aligned lyrics renderer)
+# Notes: Real model output. Lyric source: known-song template (Tulsidas Shri Ram Chandra Kripalu Bhajman).
+SHRI RAMCHANDRA KRIPALU  BHAJAMANA- SANT TULASIDAS
+Artist: Anil kumar Panigrahy
+Scale: C# minor   Tempo: 144 BPM   Confidence: 82%
+Bhatkhande key: underline = komal, M̍ = tivra Ma, dot below = mandra, dot above = taar, ‿ = meend, ∿ = andolan, ᵏ = kan swara, ( ) = murki, — = sustain
+
+Intro (00:00 - 01:01)
+1.
+   Shri   Ram     Chan   dra | Kri   pa lu Bhaj     | man             
+   Ṙ̲    — ᵏR̲̣  — — ᵏṘ̲   — ᵏR̲̣  | ᵏR̲  — Ṇ  G̲  M‿   — — | ᵏR̲̣  ᵏS R‿ S‿ — —
+   Da   — Ra  — — Da   — Ra  | Da  — Ra Da Da   — — | Da  Ra Da Da — —
+
+2.
+   Ha   ran     Bhav Bha | ya Da ru nam     |             
+   ᵏR̲̣ — R̲̣∿  — — ᵏR̲   (R̲) | Ṇ  ᵏR̲̣ ᵏR̲ ᵏR̲̣  — — | ᵏS ᵏP (M) ᵏṂ
+   Da — Da  — — Da   Ra  | Da Ra Da Ra  — — | Da Ra Da  Ra
+
+3.
+   Nav Kanj Loc han | Kanj Mukh        |                
+   R̲̣   (P̣)  (D̲̣) ᵏṢ  | ᵏP   (G̲)  M‿ (M) | (G̲) ᵏR̲̣ — ᵏS (R)
+   Da  Ra   Da  Ra  | Da   Ra   Da Ra  | Da  Ra — Da Ra 
+
+4.
+   Kar     Kanj     Pad Kan | ja ru nam      |               
+   G‿  — — M‿   — — M   G̲‿  | M  ᵏR̲̣ (Ṇ) ᵏR̲ — | S  R‿ — (M) P‿
+   Da  — — Da   — — Da  Da  | Da Ra Da  Ra — | Da Da — Da  Da
+
+5.
+   Kan dar pa A    | ga nit A   mit | Chha vi            
+   M̍   D̲‿  M̍‿ G‿ — | S  ᵏṆ  (R̲̣) ᵏS  | (R)  G‿ — — M‿ — ᵏṆ
+   Da  Da  Da Da — | Da Ra  Da  Ra  | Da   Da — — Da — Ra
+
+6.
+   Nav Ne el Ne | e      raj Sun da   | ram            
+   ᵏM  G̲‿ M  G̲  | ᵏṢ — — R̲̣‿  ᵏS  R‿ — | M̍   — (P) D̲  M̍‿
+   Da  Da Da Ra | Da — — Da  Da  Da — | Da  — Ra  Da Da
+
+7.
+   Pat   Pe et Ma  | na     hu Ta dit | Ruc hi        
+   G‿  — ᵏṢ ᵏṆ (R) | G‿ — — M̍  G  (M) | G̲   M  G̲  ᵏR̲̣ —
+   Da  — Ra Da Ra  | Da — — Ra Da Ra  | Da  Ra Da Ra —
+
+8.
+   Shuc hi Na u  | mi Ja   nak Su ta va ram
+   (Ṇ)  R̲̣  ᵏṆ Ṇ  | G̲  P  — (D) P‿          
+   Da   Ra Da Ra | Da Ra — Da  Da          
+
+Verse (01:01 - 02:03)
+9.
+   Bhaj De en Ban | dhu Di  nesh     |                 
+   M    G̲  M  ᵏṢ  | (R̲̣) (Ṇ) ᵏS   (R) | G‿ — — ᵏṂ (R̲̣) Ṇ 
+   Da   Ra Da Ra  | Da  Ra  Da   Ra  | Da — — Ra Da  Ra
+
+10.
+   Da     nav     Da it     | ya Vansh Ni   kan | da nam        
+   ᵏR̲ — — ᵏṢ  — — Ṣ  Ṣ∿ — — | ᵏR̲ ᵏR̲̣    Ṣ‿ — Ṣ   | ᵏR̲ ᵏṢ  R̲̣‿ ᵏR̲ —
+   Da — — Ra  — — Da Da — — | Da Ra    Da — Ra  | Da Ra  Da Ra —
+
+11.
+   Rag hu  nand A  | nand Kand Kos hal | Chand           
+   ᵏR̲̣  (Ṇ) Ṣ‿   R̲̣‿ | Ṣ    (G̲̣)  R̲̣   P̣   | R̲̣     R̲̣  R̲̣  — ᵏS
+   Da  Ra  Da   Da | Da   Ra   Da  Ra  | Da    Ra Da — Ra
+
+12.
+   Das hrath     Nan   da  | nam            |                
+   (R) G‿    — — M‿  — (P) | M   P‿ — R  R̲  | G̲‿ M‿ — P‿ D‿ —
+   Da  Da    — — Da  — Ra  | Da  Da — Da Ra | Da Da — Da Da —
+
+13.
+   Ṡ  (N) (P) N  | D‿ (P) ᵏR̲̣ (Ṇ) | ᵏP N̲‿ — Ṡ‿ — — N‿ —
+   Da Ra  Da  Ra | Da Ra  Da Ra  | Da Da — Da — — Da —
+
+14.
+   D̲‿ — M̍  P  M  | P‿ M̍  G̲  M 
+   Da — Ra Da Ra | Da Ra Da Ra
+
+Chorus (02:03 - 03:04)
+Bridge (03:04 - 04:06)
+Outro (04:06 - 05:07)
