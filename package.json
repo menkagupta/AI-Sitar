@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace frontend\" \"npm run api\"",
+    "api": "uvicorn app.main:app --reload --app-dir backend",
+    "install:all": "npm install && python3 -m pip install -r backend/requirements.txt",
+    "build": "npm run build --workspace frontend",
+    "lint": "npm run lint --workspace frontend"
+  },
+  "workspaces": [
+    "frontend"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

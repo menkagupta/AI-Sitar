@@ -1,0 +1,13 @@
+node_modules/
+dist/
+__pycache__/
+*.pyc
+.venv/
+uploads/
+backend/app/storage/projects.db
+.DS_Store
+.cursor/
+scripts/
+*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts
