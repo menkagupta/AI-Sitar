@@ -2,6 +2,7 @@ import { Copy, Download } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { exportUrl } from "../lib/api";
+import { NOTATION_KEY, SUSTAIN, decorateBhatkhande } from "../lib/notation";
 import type { AnalysisResult } from "../types/api";
 
 export function ExportPanel({ result }: { result: AnalysisResult }) {
@@ -79,7 +80,7 @@ function formatInlineNotes(result: AnalysisResult): string {
     `Scale: ${result.detected_scale}   Tempo: ${Math.round(result.tempo)} BPM   Confidence: ${Math.round(
       result.overall_confidence * 100,
     )}%`,
-    "Notation: - = sustain, ~ = meend, ~~ = andolan, ^ = kan swara, () = murki",
+    NOTATION_KEY,
     "",
   ];
 
@@ -112,8 +113,7 @@ function formatPhrase(phrase: AnalysisResult["sections"][number]["phrases"][numb
       strokeTokens.push("|");
     }
 
-    const swara = decorateSwara(note.swara, note.ornamentation);
-    swaraTokens.push(swara, ...sustainMarks(note.duration));
+    swaraTokens.push(decorateBhatkhande(note.swara, note.ornamentation), ...sustainMarks(note.duration));
     strokeTokens.push(note.stroke.replace(", sustain", ""), ...sustainMarks(note.duration));
   });
 
@@ -123,28 +123,12 @@ function formatPhrase(phrase: AnalysisResult["sections"][number]["phrases"][numb
   };
 }
 
-function decorateSwara(swara: string, ornamentation?: string): string {
-  if (ornamentation === "meend") {
-    return `${swara}~`;
-  }
-  if (ornamentation === "andolan") {
-    return `${swara}~~`;
-  }
-  if (ornamentation === "kan swara") {
-    return `^${swara}`;
-  }
-  if (ornamentation === "murki") {
-    return `(${swara})`;
-  }
-  return swara;
-}
-
 function sustainMarks(duration: number): string[] {
   if (duration >= 1.2) {
-    return ["-", "-"];
+    return [SUSTAIN, SUSTAIN];
   }
   if (duration >= 0.65) {
-    return ["-"];
+    return [SUSTAIN];
   }
   return [];
 }

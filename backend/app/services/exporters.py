@@ -3,6 +3,7 @@ from __future__ import annotations
 from io import BytesIO
 
 from app.schemas import AnalysisResult
+from app.services.notation import NOTATION_KEY, SUSTAIN, decorate_bhatkhande
 
 
 def export_txt(result: AnalysisResult) -> bytes:
@@ -10,7 +11,7 @@ def export_txt(result: AnalysisResult) -> bytes:
         result.title.upper(),
         f"Artist: {result.artist}" if result.artist else "",
         f"Scale: {result.detected_scale}   Tempo: {result.tempo:.0f} BPM   Confidence: {result.overall_confidence:.0%}",
-        "Notation: - = sustain, ~ = meend, ~~ = andolan, ^ = kan swara, () = murki",
+        NOTATION_KEY,
         "",
     ]
     phrase_number = 1
@@ -18,15 +19,11 @@ def export_txt(result: AnalysisResult) -> bytes:
         lines.append(f"{section.name} ({_format_time(section.start)} - {_format_time(section.end)})")
         for phrase in section.phrases:
             swaras, strokes = _format_phrase(phrase)
-            lines.extend(
-                [
-                    f"{phrase_number}.",
-                    f"   {phrase.lyrics or 'aa na ri ta'}",
-                    f"   {swaras}",
-                    f"   {strokes}",
-                    "",
-                ]
-            )
+            phrase_lines = [f"{phrase_number}."]
+            if phrase.lyrics:
+                phrase_lines.append(f"   {phrase.lyrics}")
+            phrase_lines.extend([f"   {swaras}", f"   {strokes}", ""])
+            lines.extend(phrase_lines)
             phrase_number += 1
     return "\n".join(lines).encode("utf-8")
 
@@ -120,27 +117,15 @@ def _format_phrase(phrase) -> tuple[str, str]:
             stroke_tokens.append("|")
 
         holds = _sustain_marks(event.duration)
-        swara_tokens.extend([_decorate_swara(event.swara, event.ornamentation), *holds])
+        swara_tokens.extend([decorate_bhatkhande(event.swara, event.ornamentation), *holds])
         stroke_tokens.extend([event.stroke.replace(", sustain", ""), *holds])
     return " ".join(swara_tokens), " ".join(stroke_tokens)
 
 
-def _decorate_swara(swara: str, ornamentation: str | None) -> str:
-    if ornamentation == "meend":
-        return f"{swara}~"
-    if ornamentation == "andolan":
-        return f"{swara}~~"
-    if ornamentation == "kan swara":
-        return f"^{swara}"
-    if ornamentation == "murki":
-        return f"({swara})"
-    return swara
-
-
 def _sustain_marks(duration: float) -> list[str]:
     if duration >= 1.2:
-        return ["-", "-"]
+        return [SUSTAIN, SUSTAIN]
     if duration >= 0.65:
-        return ["-"]
+        return [SUSTAIN]
     return []
 
