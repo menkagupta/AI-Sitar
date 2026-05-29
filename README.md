@@ -1,7 +1,7 @@
 # AI Sitar Transcription
 
 AI-assisted web app that turns any YouTube song into playable Sitar notation for musicians.
-Paste a link, get a Bhatkhande-style transcription with lyrics, ornamentation, fingering, and
+Paste a link, get a sitar bhajan transcription with lyrics, ornamentation, fingering, and
 practice tools. Direct audio uploads (`mp3`, `wav`, `m4a`, `flac`) are also supported when you
 already have a local file.
 
@@ -18,51 +18,60 @@ scrollable column of bhajan-style notation:
 
 ```
 1.
-   Shri Ram Chandra Kripalu Bhajman
-   Ṣ  Ṙ̲  G̣  Ṃ̍  | P̣‿  Ḋ̲  Ṅ̲  Ṡ
-   Da Ra Da Ra | Da   Ra Da  Da
+   Shri Ram Chan dra | Kri pa lu Bhaj man
+   S    R   G   m   | P‿   d  n  Ṡ   —  —
+   Da   Ra  Da  Ra  | Da   Ra Da Da  —  —
 ```
 
-Lyrics on top (when known), Bhatkhande swaras in the middle, and the mizrab strokes
-underneath &mdash; the same way a Sitar teacher writes a phrase in a student's notebook. The
-waveform player, the detailed per-note table, practice loop controls, and the export
-formats are all available, but each lives behind its own disclosure so the default view
-stays uncluttered.
+Lyrics on top (when known), sitar swaras in the middle, and the mizraab strokes underneath
+&mdash; the same way a sitar teacher writes a phrase in a student's notebook. The waveform
+player, the detailed per-note table, practice loop controls, and the export formats are all
+available, but each lives behind its own disclosure so the default view stays uncluttered.
 
-## Bhatkhande Notation, On Purpose
+## Sitar Bhajan Notation, On Purpose
 
-We render notes in **Bhatkhande short notation**, the system standardized by
-[Vishnu Narayan Bhatkhande](https://en.wikipedia.org/wiki/Vishnu_Narayan_Bhatkhande) in the
-early 20th century and the de facto written form for Hindustani classical music. It is
-compact, language-agnostic, and the form most Indian classical students already read.
+We follow the **sitar-adapted notation** documented at
+[sitarbhajans.org](https://www.sitarbhajans.org/notation/), which itself builds on Bhatkhande
+and Ravi Shankar with modifications specifically for the sitar &mdash; especially for
+gamakas, meends, and mizraab strokes. It is compact, language-agnostic, and reads naturally
+to anyone who plays Hindustani sitar.
 
 | Symbol | Meaning |
 | --- | --- |
 | `S R G M P D N` | shuddha (natural) swaras Sa Re Ga Ma Pa Dha Ni |
-| `R̲  G̲  D̲  N̲` | komal (flat) Re Ga Dha Ni &mdash; underline below |
-| `M̍` | tivra (sharp) Ma &mdash; vertical bar above |
-| `Ṣ  Ṛ  Ḡ  Ṃ  Ṗ  Ḍ  Ṇ` | mandra saptak (lower octave) &mdash; dot below |
-| `Ṡ  Ṙ  Ġ  Ṁ  Ṕ  Ḋ  Ṅ` | taar saptak (upper octave) &mdash; dot above |
+| `r g d n` | komal (flat) Re Ga Dha Ni &mdash; lowercase |
+| `m` | tivra (sharp) Ma &mdash; lowercase |
+| `Ṣ ṛ g̣ ṃ ṗ ḍ ṇ` | mandra saptak (lower octave) &mdash; dot below |
+| `Ṡ ṙ ġ ṁ ṗ ḋ ṅ` | taar saptak (upper octave) &mdash; dot above |
+| `Da` / `Ra` | mizraab strokes, rendered on the row beneath each swara |
+| `Da Ra` (adjacent) | **Diri** &mdash; rapid Da-Ra combination, in sitarbhajans.org terms |
 | `‿` | meend &mdash; slide into the next note |
 | `∿` | andolan &mdash; slow oscillation around the pitch |
 | `ᵏ` | kan swara &mdash; grace note prefix |
 | `( ... )` | murki &mdash; fast ornament cluster |
 | `—` | sustain |
-| `|` | vibhag (beat-group) boundary |
+| `\|` | vibhag (beat-group) boundary |
 
-Why this instead of Western staff or a long verbose form like `komal Dha. tivra Ma.`?
+Why this instead of Western staff, generic Bhatkhande, or a verbose form like
+`komal Dha. tivra Ma.`?
 
-- **Half the visual width**, so a full phrase fits on one line.
-- **No language barrier** &mdash; the same glyphs work whether you read Devanagari, Gurmukhi,
-  Tamil, or only Roman.
-- **Ornament-aware** &mdash; meend, kan swara, murki, and andolan are first-class marks rather
-  than parenthetical notes.
-- **Already the de facto standard** in published bhajan books, classical institutions, and
-  most Indian music teachers' notebooks.
+- **Case carries the variant.** `r g d n m` for komal and tivra is half the visual width of
+  combining underlines and bars, and far easier to read in plain text and on mobile.
+- **Sitar-specific.** The sitarbhajans.org spec defines mizraab strokes (Da, Ra, Diri) and
+  sitar-specific ornaments (meend, ghaseet, ched, aaghaata, krintan, gamak); generic
+  Bhatkhande does not.
+- **Ornament-aware.** Meend, kan swara, murki, and andolan are first-class inline marks
+  rather than parenthetical asides.
+- **Already the convention** in published sitar bhajan books and in most teachers' notebooks.
 
 The descriptive form (`Sa.`, `tivra Ma.`, `komal Dha.`) is still stored under the hood for
 exports like MIDI and MusicXML, and the original verbose spelling shows up as a tooltip on
 the detailed per-note table.
+
+> The analyzer currently emits **meend**, **andolan**, **kan swara**, and **murki**. Other
+> sitarbhajans.org symbols &mdash; ghaseet, ched, aaghaata, krintan, gamak, adhaar svara,
+> sankeerna meend, emphasized Da/Ra &mdash; are part of the notation system but not yet
+> auto-detected by the analyzer.
 
 ## Features
 
@@ -71,9 +80,9 @@ the detailed per-note table.
 - Optional direct upload of `mp3`, `wav`, `m4a`, or `flac` files
 - Async FastAPI analysis jobs with live progress
 - Tempo, scale, pitch-contour, and section estimates
-- Bhatkhande short-form swara notation with komal / tivra / saptak markings and
+- Sitar bhajan short-form swara notation with komal / tivra / saptak markings and
   meend / andolan / kan swara / murki ornaments inline
-- Sitar-specific string/fret placement, fingering, and mizrab guidance per phrase
+- Sitar-specific string/fret placement, fingering, and mizraab guidance per phrase
 - Lyric extraction pipeline: manual input &rarr; known-song templates &rarr; YouTube captions
   &rarr; local Whisper speech-to-text, with script-mismatch and metadata filters to avoid
   garbled output

@@ -1,16 +1,15 @@
-// Bhatkhande short notation renderer for the frontend.
-// Keep in sync with backend/app/services/notation.py.
+// Sitar bhajan notation renderer for the frontend.
+// Mirrors backend/app/services/notation.py — keep in sync.
+// Reference: https://www.sitarbhajans.org/notation/
 
-const COMBINING_LOW_LINE = "\u0332"; // komal
-const COMBINING_VERTICAL_LINE_ABOVE = "\u030d"; // tivra Ma
-const COMBINING_DOT_BELOW = "\u0323"; // mandra saptak
-const COMBINING_DOT_ABOVE = "\u0307"; // taar saptak
+const COMBINING_DOT_BELOW = "\u0323"; // mandra saptak (lower octave)
+const COMBINING_DOT_ABOVE = "\u0307"; // taar saptak (upper octave)
 const UNDERTIE = "\u203f"; // meend
 const SINE_WAVE = "\u223f"; // andolan
-const GRACE_PREFIX = "\u1d4f"; // kan swara
+const GRACE_PREFIX = "\u1d4f"; // kan swara prefix
 export const SUSTAIN = "\u2014"; // em dash
 
-const BASE_GLYPH: Record<string, string> = {
+const SHUDDHA: Record<string, string> = {
   Sa: "S",
   Re: "R",
   Ga: "G",
@@ -19,17 +18,28 @@ const BASE_GLYPH: Record<string, string> = {
   Dha: "D",
   Ni: "N",
 };
+const KOMAL: Record<string, string> = {
+  Re: "r",
+  Ga: "g",
+  Dha: "d",
+  Ni: "n",
+};
+const TIVRA: Record<string, string> = {
+  Ma: "m",
+};
 
 export const NOTATION_KEY =
-  `Bhatkhande key: underline = komal, M${COMBINING_VERTICAL_LINE_ABOVE} = tivra Ma, ` +
+  "Sitar bhajan key: uppercase = shuddha (S R G M P D N), " +
+  "lowercase = komal (r g d n) or tivra (m), " +
   "dot below = mandra, dot above = taar, " +
-  `${UNDERTIE} = meend, ${SINE_WAVE} = andolan, ${GRACE_PREFIX} = kan swara, ( ) = murki, ${SUSTAIN} = sustain`;
+  `${UNDERTIE} = meend, ${SINE_WAVE} = andolan, ` +
+  `${GRACE_PREFIX} = kan swara, ( ) = murki, ${SUSTAIN} = sustain, | = vibhag`;
 
 function capitalize(value: string): string {
   return value.length === 0 ? value : value[0].toUpperCase() + value.slice(1).toLowerCase();
 }
 
-export function bhatkhandeGlyph(swaraRaw: string): string {
+export function sitarGlyph(swaraRaw: string): string {
   if (!swaraRaw) return swaraRaw;
   let token = swaraRaw.trim();
 
@@ -53,18 +63,23 @@ export function bhatkhandeGlyph(swaraRaw: string): string {
     token = token.slice("tivra ".length).trim();
   }
 
-  const base = BASE_GLYPH[capitalize(token)];
-  if (!base) return swaraRaw;
+  const base = capitalize(token);
+  let glyph: string | undefined;
+  if (isKomal && KOMAL[base]) {
+    glyph = KOMAL[base];
+  } else if (isTivra && TIVRA[base]) {
+    glyph = TIVRA[base];
+  } else if (SHUDDHA[base]) {
+    glyph = SHUDDHA[base];
+  }
+  if (!glyph) return swaraRaw;
 
-  let glyph = base;
-  if (isTivra && base === "M") glyph += COMBINING_VERTICAL_LINE_ABOVE;
-  if (isKomal) glyph += COMBINING_LOW_LINE;
   if (octave) glyph += octave;
   return glyph;
 }
 
-export function decorateBhatkhande(swaraRaw: string, ornamentation?: string | null): string {
-  const glyph = bhatkhandeGlyph(swaraRaw);
+export function decorateSitar(swaraRaw: string, ornamentation?: string | null): string {
+  const glyph = sitarGlyph(swaraRaw);
   switch (ornamentation) {
     case "meend":
       return `${glyph}${UNDERTIE}`;
@@ -146,7 +161,7 @@ export function alignPhrase(notes: AlignNote[], lyricsText: string | null | unde
     if (index > 0 && index % 4 === 0) {
       columns.push({ lyric: "|", swara: "|", stroke: "|" });
     }
-    const swara = decorateBhatkhande(note.swara, note.ornamentation);
+    const swara = decorateSitar(note.swara, note.ornamentation);
     const stroke = note.stroke.replace(", sustain", "");
     const lyric = syllIdx < syllables.length ? syllables[syllIdx++] : "";
     columns.push({ lyric, swara, stroke });

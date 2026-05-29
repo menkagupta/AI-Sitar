@@ -23,7 +23,7 @@ export function ExportPanel({ result }: { result: AnalysisResult }) {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-saffron">Notes</p>
             <h3 className="mt-1 text-2xl font-bold">Simple Sitar notation</h3>
-            <p className="text-sm text-stone-600">Bhajan-style notes first. Downloads and detailed tables are optional.</p>
+            <p className="text-sm text-stone-600">Sitar bhajan notation, lyrics aligned to swaras. Downloads and detailed tables are optional.</p>
           </div>
           <div className="flex gap-2">
             <button

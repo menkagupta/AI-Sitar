@@ -1,34 +1,42 @@
-"""Bhatkhande short notation renderer.
+"""Sitar bhajan notation renderer.
 
-Maps the descriptive swara strings produced by the analysis pipeline
-("Sa", "komal Re", "tivra Ma.", "Dha'", ...) into the compact form
-used in published Bhatkhande books:
+A sitar-adapted notation scheme that follows the convention documented at
+https://www.sitarbhajans.org/notation/ (which itself builds on Bhatkhande
+and Ravi Shankar). It maps the descriptive swara strings produced by the
+analysis pipeline ("Sa", "komal Re", "tivra Ma.", "Dha'", ...) into the
+compact, sitar-specific form used in bhajan books:
 
-  - Sa Re Ga Ma Pa Dha Ni   -> S  R  G  M  P  D  N
-  - komal (flat)            -> underline below the letter   (R\u0332 G\u0332 D\u0332 N\u0332)
-  - tivra Ma                -> vertical line above the M    (M\u030d)
-  - mandra saptak (lower)   -> dot below the letter         (S\u0323 R\u0323 ...)
-  - taar saptak (upper)     -> dot above the letter         (S\u0307 R\u0307 ...)
-  - meend                   -> undertie suffix              (...\u203f)
-  - andolan                 -> sine-wave suffix             (...\u223f)
-  - kan swara (grace)       -> small leading marker         (\u1d4f<note>)
-  - murki                   -> parenthesised cluster
-  - sustain                 -> em dash                      (\u2014)
+  - Sa Re Ga Ma Pa Dha Ni   -> S  R  G  M  P  D  N   (uppercase = shuddha)
+  - komal Re Ga Dha Ni      -> r  g  d  n            (lowercase = komal)
+  - tivra Ma                -> m                     (lowercase m = tivra)
+  - mandra saptak (lower)   -> dot below the letter  (\u1e62 \u1e5b \u1e21 \u1e43 ...)
+  - taar saptak (upper)     -> dot above the letter  (\u1e60 \u1e58 \u0120 \u1e40 ...)
+  - meend                   -> undertie suffix       (...\u203f)
+  - andolan                 -> sine-wave suffix      (...\u223f)
+  - kan swara (grace)       -> small leading marker  (\u1d4f<note>)
+  - murki                   -> parenthesised cluster (...)
+  - sustain                 -> em dash               (\u2014)
+  - vibhag (beat group)     -> | bar line
+
+Strokes (Da, Ra) and stroke combinations (Diri = Da+Ra in quick
+succession) are drawn graphically below each svara in the original
+sitarbhajans.org diagrams. Since plain monospace text cannot reproduce
+those strokes faithfully, we instead emit a separate row of stroke names
+("Da", "Ra") under each svara column. Adjacent ``Da Ra`` pairs in that
+row can be read as a Diri.
 """
 
 from __future__ import annotations
 
 
-COMBINING_LOW_LINE = "\u0332"           # komal
-COMBINING_VERTICAL_LINE_ABOVE = "\u030d" # tivra Ma
-COMBINING_DOT_BELOW = "\u0323"          # mandra saptak
-COMBINING_DOT_ABOVE = "\u0307"          # taar saptak
-UNDERTIE = "\u203f"                     # meend
-SINE_WAVE = "\u223f"                    # andolan
-GRACE_PREFIX = "\u1d4f"                  # small modifier letter "k" for kan swara
-SUSTAIN = "\u2014"                       # em dash
+COMBINING_DOT_BELOW = "\u0323"   # mandra saptak (lower octave)
+COMBINING_DOT_ABOVE = "\u0307"   # taar saptak (upper octave)
+UNDERTIE = "\u203f"              # meend
+SINE_WAVE = "\u223f"             # andolan
+GRACE_PREFIX = "\u1d4f"          # kan swara prefix (small modifier 'k')
+SUSTAIN = "\u2014"               # em dash
 
-_BASE_GLYPH = {
+_SHUDDHA = {
     "Sa": "S",
     "Re": "R",
     "Ga": "G",
@@ -37,17 +45,27 @@ _BASE_GLYPH = {
     "Dha": "D",
     "Ni": "N",
 }
+_KOMAL = {
+    "Re": "r",
+    "Ga": "g",
+    "Dha": "d",
+    "Ni": "n",
+}
+_TIVRA = {
+    "Ma": "m",
+}
 
 NOTATION_KEY = (
-    "Bhatkhande key: underline = komal, M\u030d = tivra Ma, "
+    "Sitar bhajan key: uppercase = shuddha (S R G M P D N), "
+    "lowercase = komal (r g d n) or tivra (m), "
     "dot below = mandra, dot above = taar, "
-    "\u203f = meend, \u223f = andolan, " + GRACE_PREFIX + " = kan swara, "
-    "( ) = murki, \u2014 = sustain"
+    f"{UNDERTIE} = meend, {SINE_WAVE} = andolan, "
+    f"{GRACE_PREFIX} = kan swara, ( ) = murki, {SUSTAIN} = sustain, | = vibhag"
 )
 
 
-def bhatkhande_glyph(swara_raw: str) -> str:
-    """Render a single swara token in Bhatkhande short form."""
+def sitar_glyph(swara_raw: str) -> str:
+    """Render a single swara token in sitar bhajan short form."""
 
     if not swara_raw:
         return swara_raw
@@ -70,24 +88,26 @@ def bhatkhande_glyph(swara_raw: str) -> str:
         is_tivra = True
         token = token[len("tivra "):].strip()
 
-    base_glyph = _BASE_GLYPH.get(token.capitalize())
-    if base_glyph is None:
+    base = token.capitalize()
+
+    if is_komal and base in _KOMAL:
+        glyph = _KOMAL[base]
+    elif is_tivra and base in _TIVRA:
+        glyph = _TIVRA[base]
+    elif base in _SHUDDHA:
+        glyph = _SHUDDHA[base]
+    else:
         return swara_raw
 
-    glyph = base_glyph
-    if is_tivra and base_glyph == "M":
-        glyph += COMBINING_VERTICAL_LINE_ABOVE
-    if is_komal:
-        glyph += COMBINING_LOW_LINE
     if octave:
         glyph += octave
     return glyph
 
 
-def decorate_bhatkhande(swara_raw: str, ornamentation: str | None) -> str:
+def decorate_sitar(swara_raw: str, ornamentation: str | None) -> str:
     """Render a swara with its ornament marker for inline notation."""
 
-    glyph = bhatkhande_glyph(swara_raw)
+    glyph = sitar_glyph(swara_raw)
     if ornamentation == "meend":
         return f"{glyph}{UNDERTIE}"
     if ornamentation == "andolan":
@@ -169,7 +189,7 @@ def align_phrase(
     for index, event in enumerate(notes):
         if index > 0 and index % barline_every == 0:
             columns.append({"lyric": "|", "swara": "|", "stroke": "|"})
-        swara = decorate_bhatkhande(event.swara, event.ornamentation)
+        swara = decorate_sitar(event.swara, event.ornamentation)
         stroke = event.stroke.replace(", sustain", "")
         lyric = ""
         if syll_idx < len(syllables):

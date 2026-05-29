@@ -22,12 +22,12 @@ interface Feature {
 
 const FEATURES: Feature[] = [
   {
-    id: "bhatkhande",
-    label: "Bhatkhande short notation",
+    id: "sitar-notation",
+    label: "Sitar bhajan notation",
     color: "#d97706",
-    title: "Bhatkhande short notation",
-    body: "The compact written form musicians actually read. Lowercase for komal, M\u030d for tivra Ma, a dot below the letter for mandra saptak (lower octave), a dot above for taar saptak (upper octave).",
-    example: "S  R\u0332  G\u0332  M\u030d  P  D\u0332  N\u0332",
+    title: "Sitar bhajan notation",
+    body: "The compact form sitar teachers actually write. Uppercase for shuddha (S R G M P D N), lowercase for komal (r g d n) and tivra Ma (m), a dot below for mandra saptak (lower octave), a dot above for taar saptak (upper octave). Following sitarbhajans.org.",
+    example: "S  r  g  m  P  d  n  \u1e60",
   },
   {
     id: "lyrics",
@@ -35,7 +35,7 @@ const FEATURES: Feature[] = [
     color: "#1e6f7b",
     title: "Lyrics aligned with every swara",
     body: "Each syllable sits in its own column directly above the swara it is sung on. Sustains hold their own column. Words wider than their swara still keep the grid intact.",
-    example: "Shri Ram Chan dra\n\u1e62    \u1e5a   G\u0323    \u1e44\u030d",
+    example: "Shri Ram Chan dra\nS    R   G   m",
   },
   {
     id: "fret",
@@ -51,7 +51,7 @@ const FEATURES: Feature[] = [
     color: "#3f3f46",
     title: "Ornamentation inline",
     body: "Meend (slide into the next note) marked with the tie \u203f, kan swara (grace) with a small \u1d4f prefix, murki (fast cluster) in parens, andolan (slow oscillation) with the sine wave \u223f.",
-    example: "G\u0323\u203f   \u1d4fM\u030d   (D\u0332\u0323)   N\u0307\u223f",
+    example: "g\u203f   \u1d4fm   (d)   N\u0307\u223f",
   },
 ];
 
@@ -82,8 +82,8 @@ export function Hero({ form }: { form: HeroFormProps }) {
             </h1>
 
             <p className="mt-5 max-w-xl text-base leading-relaxed text-stone-700 md:text-lg">
-              Paste a song. Get a Bhatkhande-style transcription with lyrics that line up over every
-              swara, ornaments on the right notes, and fret guidance for your sitar.
+              Paste a song. Get sitar bhajan notation with lyrics that line up over every swara,
+              ornaments on the right notes, and fret guidance for your sitar.
             </p>
 
             <p className="mt-6 text-[0.7rem] font-bold uppercase tracking-[0.28em] text-stone-500">

@@ -1,6 +1,6 @@
 import { Music2 } from "lucide-react";
 
-import { bhatkhandeGlyph } from "../lib/notation";
+import { sitarGlyph } from "../lib/notation";
 import type { AnalysisResult, Phrase } from "../types/api";
 
 interface NotationViewerProps {
@@ -133,7 +133,7 @@ function PhraseCard({
             {phrase.notes.map((note, index) => (
               <tr key={`${note.start}-${note.swara}-${index}`} className="border-t border-stone-100">
                 <td className="py-2 font-semibold" title={note.swara}>
-                  {bhatkhandeGlyph(note.swara)}
+                  {sitarGlyph(note.swara)}
                 </td>
                 <td>{note.western}</td>
                 <td>

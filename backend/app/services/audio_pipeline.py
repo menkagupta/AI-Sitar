@@ -9,7 +9,7 @@ import numpy as np
 
 from app.schemas import AnalysisResult, LyricSegment, NoteEvent, Phrase, ProjectOptions, Section
 from app.services.lyrics import estimate_lyrics_from_audio, known_lyrics_for_title
-from app.services.notation import decorate_bhatkhande
+from app.services.notation import decorate_sitar
 from app.services.sitar_knowledge import (
     best_sitar_position,
     fingering_for_position,
@@ -355,10 +355,10 @@ def _build_phrases(
                 label=f"Phrase {len(phrases) + 1}",
                 start=round(chunk[0][0], 3),
                 end=round(min(end, chunk[-1][0] + chunk[-1][1]), 3),
-                swaras=" ".join(decorate_bhatkhande(event.swara, event.ornamentation) for event in events),
+                swaras=" ".join(decorate_sitar(event.swara, event.ornamentation) for event in events),
                 western_notes=" ".join(event.western for event in events),
                 sitar_tab=" ".join(
-                    f"{decorate_bhatkhande(event.swara, event.ornamentation)}({event.string}-{event.fret})"
+                    f"{decorate_sitar(event.swara, event.ornamentation)}({event.string}-{event.fret})"
                     for event in events
                 ),
                 notes=events,

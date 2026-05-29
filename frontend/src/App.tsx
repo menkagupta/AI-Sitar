@@ -174,7 +174,7 @@ export default function App() {
             <ArrowUp className="h-3.5 w-3.5" />
             Back to top
           </a>
-          <span>Built for sitar students. Bhatkhande short notation, aligned lyrics, real fret guidance.</span>
+          <span>Built for sitar students. Sitar bhajan notation, aligned lyrics, real fret guidance.</span>
         </footer>
       </div>
     </main>
@@ -224,9 +224,9 @@ function EmptyStatePreview() {
             Phrase 1
           </div>
           <pre className="whitespace-pre text-cream">
-{`Shri Ram Chan dra | Kri pa lu Bhaj   man
-Ṣ    Ṛ   G̣    Ṃ̍   | P̣‿  Ḏ̲  Ṉ̲  Ṡ    \u2014 \u2014
-Da   Da  Da   Da  | Da  Da Da Da   \u2014 \u2014`}
+{`Shri Ram Chan dra | Kri pa lu Bhaj man
+S    R   G   m   | P‿  d  n  Ṡ   \u2014 \u2014
+Da   Ra  Da  Ra  | Da  Ra Da Da  \u2014 \u2014`}
           </pre>
         </div>
       </div>

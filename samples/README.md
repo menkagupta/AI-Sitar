@@ -8,7 +8,7 @@ when demoing the project.
 
 Any file the app can export, for example:
 
-- `*.txt`        plain Bhatkhande short notation (the inline view)
+- `*.txt`        plain sitar bhajan notation (the inline view)
 - `*.pdf`        printable score
 - `*.midi`       playback-ready MIDI rendering
 - `*.musicxml`   editable score for MuseScore / Finale / Dorico
@@ -45,22 +45,25 @@ from the source artist or arrangement variant.
    ```
    # Source: https://www.youtube.com/watch?v=...
    # Generated: 2026-05-24 by AI Sitar v0.1
-   # Notes: Bhatkhande short notation. Lyrics from known-song template.
+   # Notes: Sitar bhajan notation (sitarbhajans.org). Lyrics from known-song template.
    ```
 
 ## Notation legend
 
-All TXT and PDF samples in this directory use the project's Bhatkhande short notation:
+All TXT and PDF samples in this directory use the project's sitar bhajan notation, adapted
+from https://www.sitarbhajans.org/notation/:
 
 ```
-underline = komal       (R̲ G̲ D̲ N̲)
-M̍         = tivra Ma
-dot below = mandra saptak (Ṣ Ṛ Ḡ Ṃ Ṗ Ḍ Ṇ)
-dot above = taar saptak   (Ṡ Ṙ Ġ Ṁ Ṕ Ḋ Ṅ)
-‿         = meend (slide into next note)
-∿         = andolan (slow oscillation)
-ᵏ         = kan swara (grace note prefix)
-( ... )   = murki (fast ornament cluster)
-—         = sustain
-|         = vibhag (beat-group) boundary
+S R G M P D N = shuddha (natural) swaras Sa Re Ga Ma Pa Dha Ni
+r g d n       = komal (flat) Re Ga Dha Ni (lowercase)
+m             = tivra (sharp) Ma (lowercase)
+dot below     = mandra saptak / lower octave  (Ṣ ṛ g̣ ṃ ṗ ḍ ṇ)
+dot above     = taar saptak / upper octave    (Ṡ ṙ ġ ṁ ṗ ḋ ṅ)
+Da / Ra       = mizraab strokes; adjacent Da Ra = Diri
+‿             = meend (slide into next note)
+∿             = andolan (slow oscillation)
+ᵏ             = kan swara (grace note prefix)
+( ... )       = murki (fast ornament cluster)
+—             = sustain
+|             = vibhag (beat-group) boundary
 ```
